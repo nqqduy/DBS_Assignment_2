@@ -9,7 +9,7 @@
 ### 1. (1đ) Viết các thủ tục để thêm (insert), sửa (update), xóa (delete) dữ liệu vào một bảng.
   Yêu cầu:
   - Phải có hiện thực việc kiểm tra dữ liệu hợp lệ (validate) để đảm bảo các ràng buộc của bảng dữ liệu.
-  - Xuất ra thông báo lỗi có nghĩa, chỉ ra lỗi sai cụ thể (không ghi chung chung là "Lỗi nhập liệu!"). Ví dụ : trọng lượng kiện hàng > 0 , số điện thoại cố kiểu dữ liệu hợp lệ là 10 chữ số bắt đầu là 0, ngày nhận hàng > ngày gởi hàng của cùng món hàng,...
+  - Xuất ra thông báo lỗi có nghĩa, chỉ ra lỗi sai cụ thể (không ghi chung chung là "Lỗi nhập liệu!"). Ví dụ : trọng lượng kiện hàng > 0 , số điện thoại có kiểu dữ liệu hợp lệ là 10 chữ số bắt đầu là 0, ngày nhận hàng > ngày gởi hàng của cùng món hàng,...
 ### 2. (1.5đ) Viết ít nhất 2 trigger để kiểm soát các hành động INSERT, UPDATE, DELETE trên một số bảng đã tạo. Sao cho có ít nhất 1 trigger có tính toán cập nhật dữ liệu trên bảng dữ liệu khác bảng đang được thiết lập trigger (chú ý đến các trigger để tính toán thuộc tính dẫn xuất)
 ### 3. (1.5đ) Viết ít nhất 2 thủ tục trong đó chỉ chứa các câu truy vấn để hiển thị dữ liệu.
   Trong đó, tham số đầu vào sẽ được sử dụng trong mệnh đề WHERE hoặc HAVING, gồm:
