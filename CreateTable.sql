@@ -1,5 +1,4 @@
 CREATE SCHEMA IF NOT EXISTS CongTyVanChuyen;
--- SET FOREIGN_KEY_CHECKS = 0;
 -- NhanVien
 CREATE TABLE IF NOT EXISTS CongTyVanChuyen.NhanVien (
     IdNhanVien  INT             NOT NULL,
@@ -176,5 +175,3 @@ CREATE TABLE IF NOT EXISTS CongTyVanChuyen.BienBangNhanHang (
     FOREIGN KEY(IdBbanG) REFERENCES CongTyVanChuyen.BienBangHang(IdBienBan),
     FOREIGN KEY(IdKhoGuiToi) REFERENCES CongTyVanChuyen.Kho(IdKho)
 );
--- SET FOREIGN_KEY_CHECKS = 1;
-SHOW DATABASES;
