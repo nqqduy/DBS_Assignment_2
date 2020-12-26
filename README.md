@@ -2,9 +2,9 @@
 ## PHẦN 1: TẠO CSDL (3đ)
 ### 1. (2đ) Tạo Cơ sở dữ liêu (CSDL) như đã được phân tích và thiết kế ở bài tập lớn số 1.
 - Lược đồ CSDL đã được thiết kế đó có thể được cập nhật và chuẩn hóa lại nếu thấy chưa hợp lý.
-- Các ràng buộc khóa chính, khoá ngoại, ràng buộc dữ liệu, ràng buộc ngữ nghĩa (có thể đã được nêu trong bài tập lớn 1 hoặc chưa nêu) cần được hiện thực (cố thể sử dụng Check hoặc Trigger).
+- Các ràng buộc khóa chính, khoá ngoại, ràng buộc dữ liệu, ràng buộc ngữ nghĩa (có thể đã được nêu trong bài tập lớn 1 hoặc chưa nêu) cần được hiện thực (có thể sử dụng Check hoặc Trigger).
 - In lại lược đồ CSDL mới vào báo cáo.
-### 2. (1đ) Tạo dữ liệu mẫu có ý nghĩa để minh họa cho các yêu cầu ở bên dưới. (Có thể nhập bằng giao diện). Mỗi bảng co tối thiểu 5 dòng
+### 2. (1đ) Tạo dữ liệu mẫu có ý nghĩa để minh họa cho các yêu cầu ở bên dưới. (Có thể nhập bằng giao diện). Mỗi bảng có tối thiểu 5 dòng
 ## PHẦN 2: HIỆN THỰC ỨNG DỤNG (7đ)
 ### 1. (1đ) Viết các thủ tục để thêm (insert), sửa (update), xóa (delete) dữ liệu vào một bảng.
   Yêu cầu:
