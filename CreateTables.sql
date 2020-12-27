@@ -2,14 +2,14 @@ CREATE SCHEMA IF NOT EXISTS CongTyVanChuyen;
 -- NhanVien
 CREATE TABLE IF NOT EXISTS CongTyVanChuyen.NhanVien (
 	IdNhanVien		INT				NOT NULL UNIQUE AUTO_INCREMENT,
-	Cccd			CHAR(12)		NOT NULL UNIQUE,
+	Cccd			CHAR(12)		NOT NULL UNIQUE CHECK(Cccd REGEXP '^[0-9]{12}$'),
 	HoTen			VARCHAR(64)		NOT NULL,
 	DiaChiNha		VARCHAR(64),
 	Tinh			VARCHAR(32),
-	Email			VARCHAR(128),
+	Email			VARCHAR(128)	CHECK(Email REGEXP '^[a-zA-Z0-9][+a-zA-Z0-9._-]*@[a-zA-Z0-9][a-zA-Z0-9._-]*[a-zA-Z0-9]*\\.[a-zA-Z]{2,4}$'),
 	GioiTinh		CHAR,
 	NgaySinh		DATE,
-	Luong			DECIMAL(10, 2),
+	Luong			DECIMAL(10, 2)	CHECK(Luong >= 0),
 	MatKhau			CHAR(64),
 	TrangThaiNv		CHAR(2),
 	PRIMARY KEY(IdNhanVien)
@@ -23,53 +23,59 @@ CREATE TABLE IF NOT EXISTS CongTyVanChuyen.DienThoaiNv (
 );
 CREATE TABLE IF NOT EXISTS CongTyVanChuyen.NhanVienVanChuyen (
 	IdNvVc			INT				NOT NULL,
-	LoaiBgLai		VARCHAR(3)		NOT NULL,
+	LoaiBgLai		VARCHAR(3)		NOT NULL CHECK(STRCMP(LoaiBgLai, "C") >= 0),
 	NgayCap			DATE			NOT NULL,
 	PRIMARY KEY(IdNvVc),
 	FOREIGN KEY(IdNvVc) REFERENCES CongTyVanChuyen.NhanVien(IdNhanVien)
+		ON DELETE CASCADE	ON UPDATE CASCADE
 );
 SET FOREIGN_KEY_CHECKS = 0;
 CREATE TABLE IF NOT EXISTS CongTyVanChuyen.NhanVienKho (
 	IdNvKho			INT				NOT NULL,
-	IdKhoLam		INT				NOT NULL,
+	IdKhoLam		INT,
 	LoaiNv			CHAR(2),
 	PRIMARY KEY(IdNvKho),
-	FOREIGN KEY(IdNvKho) REFERENCES CongTyVanChuyen.NhanVien(IdNhanVien),
+	FOREIGN KEY(IdNvKho) REFERENCES CongTyVanChuyen.NhanVien(IdNhanVien)
+		ON DELETE CASCADE	ON UPDATE CASCADE,
 	FOREIGN KEY(IdKhoLam) REFERENCES CongTyVanChuyen.Kho(IdKho)
+		ON DELETE SET NULL	ON UPDATE CASCADE
 );
 -- Kho
 CREATE TABLE IF NOT EXISTS CongTyVanChuyen.Kho (
 	IdKho			INT				NOT NULL UNIQUE AUTO_INCREMENT,
 	TenKho			VARCHAR(32)		NOT NULL,
 	Tinh			VARCHAR(32),
-	DienTich		DECIMAL(10, 2),
-	IdQuanLy		INT				NOT NULL,
+	DienTich		DECIMAL(10, 2)	CHECK(DienTich >= 0),
+	IdQuanLy		INT,
 	TrangThaiKho	CHAR(2),
-	SucChua			INT,
-	SucChuaHt		INT,
+	SucChua			INT				CHECK(SucChua >= 0),
+	SucChuaHt		INT				CHECK(SucChuaHt >= 0),
 	PRIMARY KEY(IdKho),
 	FOREIGN KEY(IdQuanLy) REFERENCES CongTyVanChuyen.NhanVienKho(IdNvKho)
+		ON DELETE SET NULL	ON UPDATE CASCADE,
+	CHECK(SucChua >= SucChuaHt)
 );
 -- KhachHang
 SET FOREIGN_KEY_CHECKS = 1;
 CREATE TABLE IF NOT EXISTS CongTyVanChuyen.KhachHang (
 	IdKhachHang		INT				NOT NULL UNIQUE AUTO_INCREMENT,
-	HoTen			VARCHAR(64),
+	HoTen			VARCHAR(64)		NOT NULL,
 	DiaChiNha		VARCHAR(64),
-	Tinh			VARCHAR(32),
-	DienThoai		CHAR(10),
+	Tinh			VARCHAR(32)		NOT NULL,
+	DienThoai		CHAR(10)		NOT NULL CHECK(DienThoai REGEXP '^0[0-9]{9}$'),
 	PRIMARY KEY(IdKhachHang)
 );
 -- YeuCau
 CREATE TABLE IF NOT EXISTS CongTyVanChuyen.YeuCau (
+	IdYeuCau		INT				NOT NULL UNIQUE AUTO_INCREMENT,
 	IdNgYc			INT				NOT NULL,
-	IdYeuCau		INT				NOT NULL,
 	TrangThaiYc		CHAR(2),
-	KhoiLuongH		INT,
+	KhoiLuongH		INT				CHECK(KhoiLuongH >= 0),
 	LoaiH			VARCHAR(15),
-	SoH				INT,
-	PRIMARY KEY(IdNgYc, IdYeuCau),
+	SoH				INT				CHECK(SoH >= 0),
+	PRIMARY KEY(IdYeuCau),
 	FOREIGN KEY(IdNgYc) REFERENCES CongTyVanChuyen.KhachHang(IdKhachHang)
+		ON DELETE CASCADE	ON UPDATE CASCADE
 );
 -- PhuongTien
 CREATE TABLE IF NOT EXISTS CongTyVanChuyen.PhuongTien (
@@ -82,96 +88,118 @@ CREATE TABLE IF NOT EXISTS CongTyVanChuyen.PhuongTien (
 CREATE TABLE IF NOT EXISTS CongTyVanChuyen.ThongTinCuocXe (
 	IdCuocXe		INT				NOT NULL UNIQUE AUTO_INCREMENT,
 	NgayDi			DATE,
-	IdPhTien		INT				NOT NULL,
-	IdNgLai			INT				NOT NULL,
-	IdNgPhuLai		INT				NOT NULL,
+	IdPhTien		INT,
+	IdNgLai			INT,
+	IdNgPhuLai		INT,
 	PRIMARY KEY(IdCuocXe),
-	FOREIGN KEY(IdPhTien) REFERENCES CongTyVanChuyen.PhuongTien(IdPhuongTien),
-	FOREIGN KEY(IdNgLai) REFERENCES CongTyVanChuyen.NhanVienVanChuyen(IdNvVc),
+	FOREIGN KEY(IdPhTien) REFERENCES CongTyVanChuyen.PhuongTien(IdPhuongTien)
+		ON DELETE SET NULL	ON UPDATE CASCADE,
+	FOREIGN KEY(IdNgLai) REFERENCES CongTyVanChuyen.NhanVienVanChuyen(IdNvVc)
+		ON DELETE SET NULL	ON UPDATE CASCADE,
 	FOREIGN KEY(IdNgPhuLai) REFERENCES CongTyVanChuyen.NhanVienVanChuyen(IdNvVc)
+		ON DELETE SET NULL	ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS CongTyVanChuyen.CuocXeNoiThanh (
 	IdCuocXeNt		INT				NOT NULL,
-	DoanhThu		DECIMAL(10, 2),
+	DoanhThu		DECIMAL(10, 2)	CHECK(DoanhThu >= 0),
 	PRIMARY KEY(IdCuocXeNt),
 	FOREIGN KEY(IdCuocXeNt) REFERENCES CongTyVanChuyen.ThongTinCuocXe(IdCuocXe)
+		ON DELETE CASCADE	ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS CongTyVanChuyen.CuocXeLienTinh (
 	IdCuocXeLt		INT				NOT NULL,
 	NgayDen			DATE,
 	PRIMARY KEY(IdCuocXeLt),
 	FOREIGN KEY(IdCuocXeLt) REFERENCES CongTyVanChuyen.ThongTinCuocXe(IdCuocXe)
+		ON DELETE CASCADE	ON UPDATE CASCADE
 );
 -- KienHang
 CREATE TABLE IF NOT EXISTS CongTyVanChuyen.KienHang (
 	IdKienHang		INT				NOT NULL UNIQUE AUTO_INCREMENT,
-	TongKienHang	INT,
-	KhoiLuongKh		INT,
+	TongKienHang	INT				CHECK(TongKienHang >= 0),
+	KhoiLuongKh		INT				CHECK(KhoiLuongKh >= 0),
 	PRIMARY KEY(IdKienHang)
 );
 -- ThongTinHang
 CREATE TABLE IF NOT EXISTS CongTyVanChuyen.ThongTinHang (
 	IdThongTin		INT				NOT NULL UNIQUE AUTO_INCREMENT,
-	PhiNx			DECIMAL(10, 2),
-	LuongHh			INT,
-	IdKhoX			INT				NOT NULL,
-	IdKhoN			INT				NOT NULL,
-	IdNvXuat		INT				NOT NULL,
-	IdCxLt			INT				NOT NULL,
+	PhiNx			DECIMAL(10, 2)	CHECK(PhiNx >= 0),
+	LuongHh			INT				CHECK(LuongHh >= 0),
+	IdKhoX			INT,
+	IdKhoN			INT,
+	IdNvXuat		INT,
+	IdCxLt			INT,
 	PRIMARY KEY(IdThongTin),
-	FOREIGN KEY(IdKhoX) REFERENCES CongTyVanChuyen.Kho(IdKho),
-	FOREIGN KEY(IdKhoN) REFERENCES CongTyVanChuyen.Kho(IdKho),
-	FOREIGN KEY(IdNvXuat) REFERENCES CongTyVanChuyen.NhanVienKho(IdNvKho),
+	FOREIGN KEY(IdKhoX) REFERENCES CongTyVanChuyen.Kho(IdKho)
+		ON DELETE SET NULL	ON UPDATE CASCADE,
+	FOREIGN KEY(IdKhoN) REFERENCES CongTyVanChuyen.Kho(IdKho)
+		ON DELETE SET NULL	ON UPDATE CASCADE,
+	FOREIGN KEY(IdNvXuat) REFERENCES CongTyVanChuyen.NhanVienKho(IdNvKho)
+		ON DELETE SET NULL	ON UPDATE CASCADE,
 	FOREIGN KEY(IdCxLt) REFERENCES CongTyVanChuyen.CuocXeLienTinh(IdCuocXeLt)
+		ON DELETE SET NULL	ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS CongTyVanChuyen.ThongTinNhapHang (
 	IdTtinNhap		INT				NOT NULL,
-	IdNvNhap		INT				NOT NULL,
+	IdNvNhap		INT,
 	PRIMARY KEY(IdTtinNhap),
-	FOREIGN KEY(IdTtinNhap) REFERENCES CongTyVanChuyen.ThongTinHang(IdThongTin),
+	FOREIGN KEY(IdTtinNhap) REFERENCES CongTyVanChuyen.ThongTinHang(IdThongTin)
+		ON DELETE CASCADE	ON UPDATE CASCADE,
 	FOREIGN KEY(IdNvNhap) REFERENCES CongTyVanChuyen.NhanVienKho(IdNvKho)
+		ON DELETE SET NULL	ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS CongTyVanChuyen.ThongTinXuatHang (
 	IdTtinXuat		INT				NOT NULL,
 	PRIMARY KEY(IdTtinXuat),
 	FOREIGN KEY(IdTtinXuat) REFERENCES CongTyVanChuyen.ThongTinHang(IdThongTin)
+		ON DELETE CASCADE	ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS CongTyVanChuyen.KienHangNx (
-	IdTtin      INT             NOT NULL,
-	IdKnHang    INT             NOT NULL,
+	IdTtin			INT				NOT NULL,
+	IdKnHang		INT				NOT NULL,
 	PRIMARY KEY(IdTtin),
-	FOREIGN KEY(IdTtin) REFERENCES CongTyVanChuyen.ThongTinHang(IdThongTin),
+	FOREIGN KEY(IdTtin) REFERENCES CongTyVanChuyen.ThongTinHang(IdThongTin)
+		ON DELETE CASCADE	ON UPDATE CASCADE,
 	FOREIGN KEY(IdKnHang) REFERENCES CongTyVanChuyen.KienHang(IdKienHang)
+		ON DELETE CASCADE	ON UPDATE CASCADE
 );
 -- BienBangHang
 CREATE TABLE IF NOT EXISTS CongTyVanChuyen.BienBangHang (
-	IdBienBan   INT             NOT NULL UNIQUE AUTO_INCREMENT,
-	NgayGui     DATE,
-	IdKhGn      INT             NOT NULL,
-	IdCxNt      INT             NOT NULL,
-	IdNgG       INT             NOT NULL,
-	IdNgN       INT             NOT NULL,
+	IdBienBan		INT				NOT NULL UNIQUE AUTO_INCREMENT,
+	NgayGui			DATE,
+	IdKhGn			INT,
+	IdCxNt			INT,
+	IdNgG			INT,
+	IdNgN			INT,
 	PRIMARY KEY(IdBienBan),
-	FOREIGN KEY(IdKhGn) REFERENCES CongTyVanChuyen.KienHang(IdKienHang),
-	FOREIGN KEY(IdCxNt) REFERENCES CongTyVanChuyen.CuocXeNoiThanh(IdCuocXeNt),
-	FOREIGN KEY(IdNgG) REFERENCES CongTyVanChuyen.KhachHang(IdKhachHang),
+	FOREIGN KEY(IdKhGn) REFERENCES CongTyVanChuyen.KienHang(IdKienHang)
+		ON DELETE SET NULL	ON UPDATE CASCADE,
+	FOREIGN KEY(IdCxNt) REFERENCES CongTyVanChuyen.CuocXeNoiThanh(IdCuocXeNt)
+		ON DELETE SET NULL	ON UPDATE CASCADE,
+	FOREIGN KEY(IdNgG) REFERENCES CongTyVanChuyen.KhachHang(IdKhachHang)
+		ON DELETE SET NULL	ON UPDATE CASCADE,
 	FOREIGN KEY(IdNgN) REFERENCES CongTyVanChuyen.KhachHang(IdKhachHang)
+		ON DELETE SET NULL	ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS CongTyVanChuyen.BienBangNhanHang (
-	IdBbanN     INT             NOT NULL,
-	PhiGiaoHangNhan DECIMAL(10, 2),
-	PhiLienTinh DECIMAL(10, 2),
-	NgayNhan    DATE,
-	IdKhoNhanTu INT             NOT NULL,
+	IdBbanN			INT				NOT NULL,
+	PhiGiaoHangNhan	DECIMAL(10, 2),
+	PhiLienTinh		DECIMAL(10, 2),
+	NgayNhan		DATE,
+	IdKhoNhanTu	INT,
 	PRIMARY KEY(IdBbanN),
-	FOREIGN KEY(IdBbanN) REFERENCES CongTyVanChuyen.BienBangHang(IdBienBan),
+	FOREIGN KEY(IdBbanN) REFERENCES CongTyVanChuyen.BienBangHang(IdBienBan)
+		ON DELETE CASCADE	ON UPDATE CASCADE,
 	FOREIGN KEY(IdKhoNhanTu) REFERENCES CongTyVanChuyen.Kho(IdKho)
+		ON DELETE SET NULL	ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS CongTyVanChuyen.BienBangGuiHang (
-	IdBbanG     INT             NOT NULL,
-	PhiLayHangGui   DECIMAL(10, 2),
-	IdKhoGuiToi INT             NOT NULL,
+	IdBbanG			INT				NOT NULL,
+	PhiLayHangGui	DECIMAL(10, 2),
+	IdKhoGuiToi		INT,
 	PRIMARY KEY(IdBbanG),
-	FOREIGN KEY(IdBbanG) REFERENCES CongTyVanChuyen.BienBangHang(IdBienBan),
+	FOREIGN KEY(IdBbanG) REFERENCES CongTyVanChuyen.BienBangHang(IdBienBan)
+		ON DELETE CASCADE	ON UPDATE CASCADE,
 	FOREIGN KEY(IdKhoGuiToi) REFERENCES CongTyVanChuyen.Kho(IdKho)
+		ON DELETE SET NULL	ON UPDATE CASCADE
 );
