@@ -1,9 +1,9 @@
 CREATE SCHEMA IF NOT EXISTS CongTyVanChuyen;
 -- NhanVien
 CREATE TABLE IF NOT EXISTS CongTyVanChuyen.NhanVien (
-    IdNhanVien  INT             NOT NULL AUTO_INCREMENT,
-    Cccd        CHAR(12)        NOT NULL,
-    HoTen       VARCHAR(64),
+    IdNhanVien  INT             NOT NULL UNIQUE AUTO_INCREMENT,
+    Cccd        CHAR(12)        NOT NULL UNIQUE,
+    HoTen       VARCHAR(64)     NOT NULL,
     DiaChiNha   VARCHAR(32),
     Tinh        VARCHAR(32),
     Email       VARCHAR(128),
@@ -11,9 +11,8 @@ CREATE TABLE IF NOT EXISTS CongTyVanChuyen.NhanVien (
     NgaySinh    DATE,
     Luong       DECIMAL(10, 2),
     MatKhau     CHAR(64),
-    TrangThaiNv CHAR(2),
-    PRIMARY KEY(IdNhanVien),
-    UNIQUE(Cccd)
+    TrangThaiNv VARCHAR(10),
+    PRIMARY KEY(IdNhanVien)
 );
 CREATE TABLE IF NOT EXISTS CongTyVanChuyen.DienThoaiNv (
     IdNv        INT             NOT NULL,
@@ -39,8 +38,8 @@ CREATE TABLE IF NOT EXISTS CongTyVanChuyen.NhanVienKho (
 );
 -- Kho
 CREATE TABLE IF NOT EXISTS CongTyVanChuyen.Kho (
-    IdKho       INT             NOT NULL AUTO_INCREMENT,
-    TenKho      VARCHAR(32),
+    IdKho       INT             NOT NULL UNIQUE AUTO_INCREMENT,
+    TenKho      VARCHAR(32)     NOT NULL,
     Tinh        VARCHAR(32),
     DienTich    DECIMAL(10, 2),
     IdQuanLy    INT             NOT NULL,
@@ -53,7 +52,7 @@ CREATE TABLE IF NOT EXISTS CongTyVanChuyen.Kho (
 -- KhachHang
 SET FOREIGN_KEY_CHECKS = 1;
 CREATE TABLE IF NOT EXISTS CongTyVanChuyen.KhachHang (
-    IdKhachHang INT             NOT NULL AUTO_INCREMENT,
+    IdKhachHang INT             NOT NULL UNIQUE AUTO_INCREMENT,
     HoTen       VARCHAR(64),
     DiaChiNha   VARCHAR(32),
     Tinh        VARCHAR(32),
@@ -73,14 +72,14 @@ CREATE TABLE IF NOT EXISTS CongTyVanChuyen.YeuCau (
 );
 -- PhuongTien
 CREATE TABLE IF NOT EXISTS CongTyVanChuyen.PhuongTien (
-    IdPhuongTien    INT         NOT NULL AUTO_INCREMENT,
+    IdPhuongTien    INT         NOT NULL UNIQUE AUTO_INCREMENT,
     BienSo      INT,
     TrangThaiPt CHAR(2),
     PRIMARY KEY(IdPhuongTien)
 );
 -- ThongTinCuocXe
 CREATE TABLE IF NOT EXISTS CongTyVanChuyen.ThongTinCuocXe (
-    IdCuocXe    INT             NOT NULL AUTO_INCREMENT,
+    IdCuocXe    INT             NOT NULL UNIQUE AUTO_INCREMENT,
     NgayDi      DATE,
     IdPhTien    INT             NOT NULL,
     IdNgLai     INT             NOT NULL,
@@ -104,14 +103,14 @@ CREATE TABLE IF NOT EXISTS CongTyVanChuyen.CuocXeLienTinh (
 );
 -- KienHang
 CREATE TABLE IF NOT EXISTS CongTyVanChuyen.KienHang (
-    IdKienHang  INT             NOT NULL AUTO_INCREMENT,
+    IdKienHang  INT             NOT NULL UNIQUE AUTO_INCREMENT,
     TongKienHang    INT,
     KhoiLuongKh INT,
     PRIMARY KEY(IdKienHang)
 );
 -- ThongTinHang
 CREATE TABLE IF NOT EXISTS CongTyVanChuyen.ThongTinHang (
-    IdThongTin  INT             NOT NULL AUTO_INCREMENT,
+    IdThongTin  INT             NOT NULL UNIQUE AUTO_INCREMENT,
     PhiNx       DECIMAL(10, 2),
     LuongHh     INT,
     IdKhoX      INT             NOT NULL,
@@ -145,7 +144,7 @@ CREATE TABLE IF NOT EXISTS CongTyVanChuyen.KienHangNx (
 );
 -- BienBangHang
 CREATE TABLE IF NOT EXISTS CongTyVanChuyen.BienBangHang (
-    IdBienBan   INT             NOT NULL AUTO_INCREMENT,
+    IdBienBan   INT             NOT NULL UNIQUE AUTO_INCREMENT,
     NgayGui     DATE,
     IdKhGn      INT             NOT NULL,
     IdCxNt      INT             NOT NULL,
