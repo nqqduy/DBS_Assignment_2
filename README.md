@@ -21,3 +21,17 @@
 - Có giao diện phục vụ cho chức năng thêm dữ liệu vào bảng dữ liệu trong câu 1.
 - Có giao diện hiển thị danh sách dữ liệu từ việc gọi thủ tục trong câu 3. Cần có chức năng phụ như search, filter, sắp xếp,...
 - Ứng dụng có giao diện đẹp, các chức năng được làm thêm phong phú, có độ phức tạp, hướng người dùng,... sẽ được cộng điểm.
+## Thống nhất một số vấn đề:
+- GioiTinh của NhanVien gồm F(Female) với M(Male).
+- TrangThaiNv của NhanVien gồm HD(Hoạt động) với DX(Đã xóa).
+- MatKhau của NhanVien là đã bị mã hóa sha256, vào trang này để tạo https://emn178.github.io/online-tools/sha256.html
+- DienThoai của DienThoaiNv và KhachHang là số có 10 chữ số bắt đầu là 0.
+- LoaiBangLai của NhanVienVanChuyen phải >= C(C, D, E,...).
+- LoaiNv của NhanVienKho gồm QK(Quản lý Kho), NX(Nhân viên nhập xuất), KT(Kế toán), TV(Tạp vụ), QL(Quản lý Chính),...
+- TrangThaiKho của Kho gồm HD(Hoạt động), DX(Đã xóa).
+- SucChuaHt < SucChua của Kho.
+- TrangThaiPt của PhuongTien gồm HD(Hoạt động), SS(Sẵn sàng), BD(Bảo dưỡng).
+- NgayDen của CuocXeLienTinh >= NgayDi của ThongTinCuocXe.
+- NgayGui của BienBanHang <= NgayNhan của BienBanNhanHang.
+- Các giá trị tiền tệ như (Luong, DoanhThu, Phi,...) liên quan đến tiền tệ có kiểu data là decimal(10, 2) lấy đơn vị là nghìn đồng.
+- Các giá trị liên quan đến khối lượng lấy đơn vị là gam.

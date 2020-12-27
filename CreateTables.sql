@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS CongTyVanChuyen.NhanVien (
     NgaySinh    DATE,
     Luong       DECIMAL(10, 2),
     MatKhau     CHAR(64),
-    TrangThaiNv VARCHAR(10),
+    TrangThaiNv CHAR(2),
     PRIMARY KEY(IdNhanVien)
 );
 CREATE TABLE IF NOT EXISTS CongTyVanChuyen.DienThoaiNv (
@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS CongTyVanChuyen.YeuCau (
 -- PhuongTien
 CREATE TABLE IF NOT EXISTS CongTyVanChuyen.PhuongTien (
     IdPhuongTien    INT         NOT NULL UNIQUE AUTO_INCREMENT,
-    BienSo      INT,
+    BienSo     	VARCHAR(32),
     TrangThaiPt CHAR(2),
     PRIMARY KEY(IdPhuongTien)
 );
@@ -156,7 +156,7 @@ CREATE TABLE IF NOT EXISTS CongTyVanChuyen.BienBangHang (
     FOREIGN KEY(IdNgG) REFERENCES CongTyVanChuyen.KhachHang(IdKhachHang),
     FOREIGN KEY(IdNgN) REFERENCES CongTyVanChuyen.KhachHang(IdKhachHang)
 );
-CREATE TABLE IF NOT EXISTS CongTyVanChuyen.BienBangGuiHang (
+CREATE TABLE IF NOT EXISTS CongTyVanChuyen.BienBangNhanHang (
     IdBbanN     INT             NOT NULL,
     PhiGiaoHangNhan DECIMAL(10, 2),
     PhiLienTinh DECIMAL(10, 2),
@@ -166,7 +166,7 @@ CREATE TABLE IF NOT EXISTS CongTyVanChuyen.BienBangGuiHang (
     FOREIGN KEY(IdBbanN) REFERENCES CongTyVanChuyen.BienBangHang(IdBienBan),
     FOREIGN KEY(IdKhoNhanTu) REFERENCES CongTyVanChuyen.Kho(IdKho)
 );
-CREATE TABLE IF NOT EXISTS CongTyVanChuyen.BienBangNhanHang (
+CREATE TABLE IF NOT EXISTS CongTyVanChuyen.BienBangGuiHang (
     IdBbanG     INT             NOT NULL,
     PhiLayHangGui   DECIMAL(10, 2),
     IdKhoGuiToi INT             NOT NULL,
