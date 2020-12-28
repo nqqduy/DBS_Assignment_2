@@ -157,7 +157,7 @@ CREATE TABLE IF NOT EXISTS CongTyVanChuyen.ThongTinXuatHang (
 CREATE TABLE IF NOT EXISTS CongTyVanChuyen.KienHangNx (
 	IdTtin			INT				NOT NULL,
 	IdKnHang		INT				NOT NULL,
-	PRIMARY KEY(IdTtin),
+	PRIMARY KEY(IdTtin, IdKnHang),
 	FOREIGN KEY(IdTtin) REFERENCES CongTyVanChuyen.ThongTinHang(IdThongTin)
 		ON DELETE CASCADE	ON UPDATE CASCADE,
 	FOREIGN KEY(IdKnHang) REFERENCES CongTyVanChuyen.KienHang(IdKienHang)

@@ -137,6 +137,99 @@ IF (dangBieuDo = 1) THEN
 END IF;
 END$$
 
+-- Procedure insert
+
+DROP PROCEDURE IF EXISTS CongTyVanChuyen.insertBienBanGui$$
+CREATE PROCEDURE CongTyVanChuyen.insertBienBanGui(
+	IN		ngayGui			DATE,
+	IN		idKhGn			INT,
+	IN		idCxNt			INT,
+	IN		idNgG			INT,
+	IN		idNgN			INT,
+	IN		phiLayHangGui	DECIMAL(10, 2),
+	IN		idKhoGuiToi		INT
+)
+BEGIN
+DECLARE idBienBan INT;
+INSERT INTO CongTyVanChuyen.BienBanHang(NgayGui, IdKhGn, IdCxNt, IdNgG, IdNgN)
+VALUES (ngayGui, idKhGn, idCxNt, idNgG, idNgN);
+SET idBienBan = LAST_INSERT_ID();
+INSERT INTO CongTyVanChuyen.BienBanGuiHang(IdBbanG, PhiLayHangGui, IdKhoGuiToi)
+VALUES (idBienBan, phiLayHangGui, idKhoGuiToi);
+END$$
+
+DROP PROCEDURE IF EXISTS CongTyVanChuyen.insertBienBanNhan$$
+CREATE PROCEDURE CongTyVanChuyen.insertBienBanNhan(
+	IN		ngayGui			DATE,
+	IN		idKhGn			INT,
+	IN		idCxNt			INT,
+	IN		idNgG			INT,
+	IN		idNgN			INT,
+	IN		phiGiaoHangNhan	DECIMAL(10, 2),
+	IN		phiLienTinh		DECIMAL(10, 2),
+	IN		ngayNhan		DATE,
+	IN		idKhoNhanTu		INT
+)
+BEGIN
+DECLARE idBienBan INT;
+INSERT INTO CongTyVanChuyen.BienBanHang(NgayGui, IdKhGn, IdCxNt, IdNgG, IdNgN)
+VALUES (ngayGui, idKhGn, idCxNt, idNgG, idNgN);
+SET idBienBan = LAST_INSERT_ID();
+INSERT INTO CongTyVanChuyen.BienBanNhanHang(IdBbanN, PhiGiaoHangNhan, PhiLienTinh, NgayNhan, IdKhoNhanTu)
+VALUES (idBienBan, phiGiaoHangNhan, phiLienTinh, ngayNhan, idKhoNhanTu);
+END$$
+
+DROP PROCEDURE IF EXISTS CongTyVanChuyen.insertThongTinXuat$$
+CREATE PROCEDURE CongTyVanChuyen.insertThongTinXuat(
+	IN		phiNx			DECIMAL(10, 2),
+	IN		luongHh			INT,
+	IN		idKhoX			INT,
+	IN		idKhoN			INT,
+	IN		idNvXuat		INT,
+	IN		idCxLt			INT,
+	OUT		idThongTin		INT
+)
+BEGIN
+IF (phiNx < 0) THEN 
+	SIGNAL SQLSTATE '11001'
+		SET MESSAGE_TEXT = 'Phi nhap xuat phai lon hon hoac bang 0!!!';
+ELSEIF (luongHh < 0) THEN 
+	SIGNAL SQLSTATE '11001'
+		SET MESSAGE_TEXT = 'Luong hang hoa phai lon hon hoac bang 0!!!';
+END IF;
+INSERT INTO CongTyVanChuyen.ThongTinHang(PhiNx, LuongHh, IdKhoX, IdKhoN, IdNvXuat, IdCxLt)
+VALUES (phiNx, luongHh, idKhoX, idKhoN, idNvXuat, idCxLt);
+SET idThongTin = LAST_INSERT_ID();
+INSERT INTO CongTyVanChuyen.ThongTinXuatHang(IdTtinXuat)
+VALUES (idThongTin);
+END$$
+
+DROP PROCEDURE IF EXISTS CongTyVanChuyen.insertThongTinNhap$$
+CREATE PROCEDURE CongTyVanChuyen.insertThongTinNhap(
+	IN		phiNx			DECIMAL(10, 2),
+	IN		luongHh			INT,
+	IN		idKhoX			INT,
+	IN		idKhoN			INT,
+	IN		idNvXuat		INT,
+	IN		idCxLt			INT,
+	IN		idNvNhap		INT,
+	OUT		idThongTin		INT
+)
+BEGIN
+IF (phiNx < 0) THEN 
+	SIGNAL SQLSTATE '11001'
+		SET MESSAGE_TEXT = 'Phi nhap xuat phai lon hon hoac bang 0!!!';
+ELSEIF (luongHh < 0) THEN 
+	SIGNAL SQLSTATE '11001'
+		SET MESSAGE_TEXT = 'Luong hang hoa phai lon hon hoac bang 0!!!';
+END IF;
+INSERT INTO CongTyVanChuyen.ThongTinHang(PhiNx, LuongHh, IdKhoX, IdKhoN, IdNvXuat, IdCxLt)
+VALUES (phiNx, luongHh, idKhoX, idKhoN, idNvXuat, idCxLt);
+SET idThongTin = LAST_INSERT_ID();
+INSERT INTO CongTyVanChuyen.ThongTinNhapHang(IdTtinNhap, IdNvNhap)
+VALUES (idThongTin, idNvNhap);
+END$$
+
 -- Rang buoc boi trigger
 -- Insert
 

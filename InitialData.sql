@@ -157,31 +157,20 @@ INSERT INTO CongTyVanChuyen.KienHang (IdKienHang, TongKienHang, KhoiLuongKh) VAL
 INSERT INTO CongTyVanChuyen.KienHang (IdKienHang, TongKienHang, KhoiLuongKh) VALUES ('10', '2', '3');
 INSERT INTO CongTyVanChuyen.KienHang (IdKienHang, TongKienHang, KhoiLuongKh) VALUES ('11', '2', '20');
 
-INSERT INTO CongTyVanChuyen.ThongTinHang (IdThongTin, PhiNx, LuongHh, IdKhoX, IdKhoN, IdNvXuat, IdCxLt) VALUES ('1', '25', '1', '1', '3', '20', '20201');
-INSERT INTO CongTyVanChuyen.ThongTinHang (IdThongTin, PhiNx, LuongHh, IdKhoX, IdKhoN, IdNvXuat, IdCxLt) VALUES ('2', '30', '2', '2', '4', '23', '20202');
-INSERT INTO CongTyVanChuyen.ThongTinHang (IdThongTin, PhiNx, LuongHh, IdKhoX, IdKhoN, IdNvXuat, IdCxLt) VALUES ('3', '35', '1', '5', '1', '21', '20203');
-INSERT INTO CongTyVanChuyen.ThongTinHang (IdThongTin, PhiNx, LuongHh, IdKhoX, IdKhoN, IdNvXuat, IdCxLt) VALUES ('4', '20', '3', '4', '5', '22', '20204');
-INSERT INTO CongTyVanChuyen.ThongTinHang (IdThongTin, PhiNx, LuongHh, IdKhoX, IdKhoN, IdNvXuat, IdCxLt) VALUES ('5', '40', '4', '3', '2', '24', '20205');
-INSERT INTO CongTyVanChuyen.ThongTinHang (IdThongTin, PhiNx, LuongHh, IdKhoX, IdKhoN, IdNvXuat, IdCxLt) VALUES ('6', '25', '1', '1', '3', '20', '20201');
-INSERT INTO CongTyVanChuyen.ThongTinHang (IdThongTin, PhiNx, LuongHh, IdKhoX, IdKhoN, IdNvXuat, IdCxLt) VALUES ('7', '30', '2', '2', '4', '23', '20202');
-INSERT INTO CongTyVanChuyen.ThongTinHang (IdThongTin, PhiNx, LuongHh, IdKhoX, IdKhoN, IdNvXuat, IdCxLt) VALUES ('8', '35', '1', '5', '1', '21', '20203');
-INSERT INTO CongTyVanChuyen.ThongTinHang (IdThongTin, PhiNx, LuongHh, IdKhoX, IdKhoN, IdNvXuat, IdCxLt) VALUES ('9', '20', '3', '4', '5', '22', '20204');
-INSERT INTO CongTyVanChuyen.ThongTinHang (IdThongTin, PhiNx, LuongHh, IdKhoX, IdKhoN, IdNvXuat, IdCxLt) VALUES ('10', '40', '4', '3', '2', '24', '20205');
+CALL CongTyVanChuyen.insertBienBanGui('2020-11-10', 1, 20206, 9001, 9002, 4, 1);
+CALL CongTyVanChuyen.insertThongTinXuat(5, 1, 1, 2, 20, 20201, @idThongTin);
+INSERT INTO CongTyVanChuyen.KienHangNx VALUES(@idThongTin, 1);
+INSERT INTO CongTyVanChuyen.KienHangNx VALUES(@idThongTin, 2);
+CALL CongTyVanChuyen.insertThongTinNhap(5, 1, 1, 2, 20, 20201, 21, @idThongTin);
+INSERT INTO CongTyVanChuyen.KienHangNx VALUES(@idThongTin, 1);
+INSERT INTO CongTyVanChuyen.KienHangNx VALUES(@idThongTin, 2);
+CALL CongTyVanChuyen.insertBienBanNhan('2020-11-10', 1, 20207, 9001, 9002, 5, 4, '2020-11-11', 2);
 
-INSERT INTO CongTyVanChuyen.ThongTinNhapHang (IdTtinNhap, IdNvNhap) VALUES ('1', '34');
-INSERT INTO CongTyVanChuyen.ThongTinNhapHang (IdTtinNhap, IdNvNhap) VALUES ('2', '30');
-INSERT INTO CongTyVanChuyen.ThongTinNhapHang (IdTtinNhap, IdNvNhap) VALUES ('3', '32');
-INSERT INTO CongTyVanChuyen.ThongTinNhapHang (IdTtinNhap, IdNvNhap) VALUES ('4', '31');
-INSERT INTO CongTyVanChuyen.ThongTinNhapHang (IdTtinNhap, IdNvNhap) VALUES ('5', '33');
-
-INSERT INTO CongTyVanChuyen.KienHangNx VALUES ('1', '1');
-INSERT INTO CongTyVanChuyen.KienHangNx VALUES ('2', '2');
-INSERT INTO CongTyVanChuyen.KienHangNx VALUES ('3', '3');
-INSERT INTO CongTyVanChuyen.KienHangNx VALUES ('4', '4');
-INSERT INTO CongTyVanChuyen.KienHangNx VALUES ('5', '5');
-
-INSERT INTO CongTyVanChuyen.ThongTinXuatHang (IdTtinXuat) VALUES ('6');
-INSERT INTO CongTyVanChuyen.ThongTinXuatHang (IdTtinXuat) VALUES ('7');
-INSERT INTO CongTyVanChuyen.ThongTinXuatHang (IdTtinXuat) VALUES ('8');
-INSERT INTO CongTyVanChuyen.ThongTinXuatHang (IdTtinXuat) VALUES ('9');
-INSERT INTO CongTyVanChuyen.ThongTinXuatHang (IdTtinXuat) VALUES ('10');
+CALL CongTyVanChuyen.insertBienBanGui('2020-11-12', 1, 20208, 9003, 9004, 5, 1);
+CALL CongTyVanChuyen.insertThongTinXuat(5, 1, 1, 2, 20, 20201, @idThongTin);
+INSERT INTO CongTyVanChuyen.KienHangNx VALUES(@idThongTin, 3);
+INSERT INTO CongTyVanChuyen.KienHangNx VALUES(@idThongTin, 4);
+CALL CongTyVanChuyen.insertThongTinNhap(5, 1, 1, 2, 20, 20201, 21, @idThongTin);
+INSERT INTO CongTyVanChuyen.KienHangNx VALUES(@idThongTin, 3);
+INSERT INTO CongTyVanChuyen.KienHangNx VALUES(@idThongTin, 4);
+CALL CongTyVanChuyen.insertBienBanNhan('2020-11-12', 1, 20207, 9003, 9004, 6, 3, '2020-11-13', 2);
