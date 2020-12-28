@@ -109,6 +109,11 @@ INSERT INTO CongTyVanChuyen.ThongTinCuocXe (IdCuocXe, NgayDi, IdPhTien, IdNgLai,
 INSERT INTO CongTyVanChuyen.ThongTinCuocXe (IdCuocXe, NgayDi, IdPhTien, IdNgLai, IdNgPhuLai) VALUES ('20208', '2020-10-12', '202', '10', '7');
 INSERT INTO CongTyVanChuyen.ThongTinCuocXe (IdCuocXe, NgayDi, IdPhTien, IdNgLai, IdNgPhuLai) VALUES ('20209', '2020-10-13', '203', '11', '8');
 INSERT INTO CongTyVanChuyen.ThongTinCuocXe (IdCuocXe, NgayDi, IdPhTien, IdNgLai, IdNgPhuLai) VALUES ('20210', '2020-10-14', '204', '7', '9');
+INSERT INTO CongTyVanChuyen.ThongTinCuocXe (IdCuocXe, NgayDi, IdPhTien, IdNgLai, IdNgPhuLai) VALUES ('20211', '2020-11-12', '200', '7', '8');
+INSERT INTO CongTyVanChuyen.ThongTinCuocXe (IdCuocXe, NgayDi, IdPhTien, IdNgLai, IdNgPhuLai) VALUES ('20212', '2020-11-13', '201', '7', '9');
+INSERT INTO CongTyVanChuyen.ThongTinCuocXe (IdCuocXe, NgayDi, IdPhTien, IdNgLai, IdNgPhuLai) VALUES ('20213', '2020-11-14', '202', '8', '10');
+INSERT INTO CongTyVanChuyen.ThongTinCuocXe (IdCuocXe, NgayDi, IdPhTien, IdNgLai, IdNgPhuLai) VALUES ('20214', '2020-11-15', '203', '9', '11');
+INSERT INTO CongTyVanChuyen.ThongTinCuocXe (IdCuocXe, NgayDi, IdPhTien, IdNgLai, IdNgPhuLai) VALUES ('20215', '2020-11-16', '204', '9', '11');
 
 INSERT INTO CongTyVanChuyen.CuocXeLienTinh (IdCuocXeLt, NgayDen) VALUES ('20201', '2020-11-11');
 INSERT INTO CongTyVanChuyen.CuocXeLienTinh (IdCuocXeLt, NgayDen) VALUES ('20202', '2020-11-12');
@@ -121,6 +126,11 @@ INSERT INTO CongTyVanChuyen.CuocXeNoiThanh (IdCuocXeNt, DoanhThu) VALUES ('20207
 INSERT INTO CongTyVanChuyen.CuocXeNoiThanh (IdCuocXeNt, DoanhThu) VALUES ('20208', 33);
 INSERT INTO CongTyVanChuyen.CuocXeNoiThanh (IdCuocXeNt, DoanhThu) VALUES ('20209', 50);
 INSERT INTO CongTyVanChuyen.CuocXeNoiThanh (IdCuocXeNt, DoanhThu) VALUES ('20210', 100);
+INSERT INTO CongTyVanChuyen.CuocXeNoiThanh (IdCuocXeNt, DoanhThu) VALUES ('20211', 18);
+INSERT INTO CongTyVanChuyen.CuocXeNoiThanh (IdCuocXeNt, DoanhThu) VALUES ('20212', 32);
+INSERT INTO CongTyVanChuyen.CuocXeNoiThanh (IdCuocXeNt, DoanhThu) VALUES ('20213', 23);
+INSERT INTO CongTyVanChuyen.CuocXeNoiThanh (IdCuocXeNt, DoanhThu) VALUES ('20214', 30);
+INSERT INTO CongTyVanChuyen.CuocXeNoiThanh (IdCuocXeNt, DoanhThu) VALUES ('20215', 80);
 
 INSERT INTO CongTyVanChuyen.KhachHang (IdKhachHang, HoTen, DiaChiNha, Tinh, DienThoai) VALUES ('9001', 'Nguyễn Văn A', '2 Lý Thường Kiệt, Quận 10', 'Hồ Chí Minh', '0903218982');
 INSERT INTO CongTyVanChuyen.KhachHang (IdKhachHang, HoTen, DiaChiNha, Tinh, DienThoai) VALUES ('9002', 'Nguyễn Văn B', '4 Hồ Quý Ly, Trảng Bom', 'Đồng Nai', '0905125109');
@@ -158,6 +168,7 @@ INSERT INTO CongTyVanChuyen.KienHang (IdKienHang, TongKienHang, KhoiLuongKh) VAL
 INSERT INTO CongTyVanChuyen.KienHang (IdKienHang, TongKienHang, KhoiLuongKh) VALUES ('11', '2', '20');
 
 CALL CongTyVanChuyen.insertBienBanGui('2020-11-10', 1, 20206, 9001, 9002, 4, 1);
+CALL CongTyVanChuyen.insertBienBanGui('2020-11-10', 2, 20206, 9004, 9003, 4, 1);
 CALL CongTyVanChuyen.insertThongTinXuat(5, 1, 1, 2, 20, 20201, @idThongTin);
 INSERT INTO CongTyVanChuyen.KienHangNx VALUES(@idThongTin, 1);
 INSERT INTO CongTyVanChuyen.KienHangNx VALUES(@idThongTin, 2);
@@ -165,12 +176,26 @@ CALL CongTyVanChuyen.insertThongTinNhap(5, 1, 1, 2, 20, 20201, 21, @idThongTin);
 INSERT INTO CongTyVanChuyen.KienHangNx VALUES(@idThongTin, 1);
 INSERT INTO CongTyVanChuyen.KienHangNx VALUES(@idThongTin, 2);
 CALL CongTyVanChuyen.insertBienBanNhan('2020-11-10', 1, 20207, 9001, 9002, 5, 4, '2020-11-11', 2);
+CALL CongTyVanChuyen.insertBienBanNhan('2020-11-10', 2, 20207, 9004, 9003, 5, 4, '2020-11-11', 2);
 
-CALL CongTyVanChuyen.insertBienBanGui('2020-11-12', 1, 20208, 9003, 9004, 5, 1);
-CALL CongTyVanChuyen.insertThongTinXuat(5, 1, 1, 2, 20, 20201, @idThongTin);
+CALL CongTyVanChuyen.insertBienBanGui('2020-11-12', 3, 20208, 9003, 9004, 5, 2);
+CALL CongTyVanChuyen.insertBienBanGui('2020-11-12', 4, 20208, 9002, 9005, 5, 2);
+CALL CongTyVanChuyen.insertThongTinXuat(6, 1, 2, 3, 22, 20201, @idThongTin);
 INSERT INTO CongTyVanChuyen.KienHangNx VALUES(@idThongTin, 3);
 INSERT INTO CongTyVanChuyen.KienHangNx VALUES(@idThongTin, 4);
-CALL CongTyVanChuyen.insertThongTinNhap(5, 1, 1, 2, 20, 20201, 21, @idThongTin);
+CALL CongTyVanChuyen.insertThongTinNhap(6, 1, 2, 3, 22, 20201, 23, @idThongTin);
 INSERT INTO CongTyVanChuyen.KienHangNx VALUES(@idThongTin, 3);
 INSERT INTO CongTyVanChuyen.KienHangNx VALUES(@idThongTin, 4);
-CALL CongTyVanChuyen.insertBienBanNhan('2020-11-12', 1, 20207, 9003, 9004, 6, 3, '2020-11-13', 2);
+CALL CongTyVanChuyen.insertBienBanNhan('2020-11-12', 3, 20209, 9003, 9004, 6, 3, '2020-11-13', 3);
+CALL CongTyVanChuyen.insertBienBanNhan('2020-11-12', 4, 20209, 9002, 9005, 6, 3, '2020-11-13', 3);
+
+CALL CongTyVanChuyen.insertBienBanGui('2020-11-13', 5, 20210, 9005, 9006, 5, 3);
+CALL CongTyVanChuyen.insertBienBanGui('2020-11-13', 6, 20210, 9007, 9001, 5, 3);
+CALL CongTyVanChuyen.insertThongTinXuat(5, 1, 3, 4, 22, 20201, @idThongTin);
+INSERT INTO CongTyVanChuyen.KienHangNx VALUES(@idThongTin, 5);
+INSERT INTO CongTyVanChuyen.KienHangNx VALUES(@idThongTin, 6);
+CALL CongTyVanChuyen.insertThongTinNhap(5, 1, 3, 4, 22, 20201, 23, @idThongTin);
+INSERT INTO CongTyVanChuyen.KienHangNx VALUES(@idThongTin, 5);
+INSERT INTO CongTyVanChuyen.KienHangNx VALUES(@idThongTin, 6);
+CALL CongTyVanChuyen.insertBienBanNhan('2020-11-12', 3, 20211, 9005, 9006, 6, 3, '2020-11-13', 4);
+CALL CongTyVanChuyen.insertBienBanNhan('2020-11-12', 4, 20211, 9007, 9001, 6, 3, '2020-11-13', 4);

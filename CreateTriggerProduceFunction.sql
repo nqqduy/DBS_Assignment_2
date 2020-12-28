@@ -230,6 +230,57 @@ INSERT INTO CongTyVanChuyen.ThongTinNhapHang(IdTtinNhap, IdNvNhap)
 VALUES (idThongTin, idNvNhap);
 END$$
 
+DROP PROCEDURE IF EXISTS CongTyVanChuyen.insertDienThoaiNv$$
+CREATE PROCEDURE CongTyVanChuyen.insertDienThoaiNv(
+	IN		idNv			INT,
+	IN		dienThoai		CHAR(10)
+)
+BEGIN
+IF ((dienThoai REGEXP '^0[0-9]{9}$') = 0) THEN
+	SIGNAL SQLSTATE '11001'
+		SET MESSAGE_TEXT = 'Dien thoai phai co 10 so va bat dau bang so 0!!!';
+END IF;
+INSERT INTO CongTyVanChuyen.DienThoaiNv(IdNv, DienThoai)
+VALUES (idNv, dienThoai);
+END$$
+
+-- Procedure update
+
+DROP PROCEDURE IF EXISTS CongTyVanChuyen.updateDienThoaiNv$$
+CREATE PROCEDURE CongTyVanChuyen.updateDienThoaiNv(
+	IN		idNv			INT,
+	IN		dienThoai		CHAR(10),
+    IN		dienThoaiMoi	CHAR(10)
+)
+BEGIN
+IF ((dienThoai REGEXP '^0[0-9]{9}$') = 0) THEN
+	SIGNAL SQLSTATE '11001'
+		SET MESSAGE_TEXT = 'Dien thoai cu phai co 10 so va bat dau bang so 0!!!';
+ELSEIF ((dienThoaiMoi REGEXP '^0[0-9]{9}$') = 0) THEN
+	SIGNAL SQLSTATE '11001'
+		SET MESSAGE_TEXT = 'Dien thoai moi phai co 10 so va bat dau bang so 0!!!';
+END IF;
+UPDATE CongTyVanChuyen.DienThoaiNv
+SET DienThoai = dienThoaiMoi
+WHERE DienThoaiNv.IdNv = idNv AND DienThoaiNv.DienThoai = dienThoai;
+END$$
+
+-- Procedure delete
+
+DROP PROCEDURE IF EXISTS CongTyVanChuyen.deleteDienThoaiNv$$
+CREATE PROCEDURE CongTyVanChuyen.deleteDienThoaiNv(
+	IN		idNv			INT,
+	IN		dienThoai		CHAR(10)
+)
+BEGIN
+IF ((dienThoai REGEXP '^0[0-9]{9}$') = 0) THEN
+	SIGNAL SQLSTATE '11001'
+		SET MESSAGE_TEXT = 'Dien thoai phai co 10 so va bat dau bang so 0!!!';
+END IF;
+DELETE FROM CongTyVanChuyen.DienThoaiNv
+WHERE DienThoaiNv.IdNv = idNv AND DienThoaiNv.DienThoai = dienThoai;
+END$$
+
 -- Rang buoc boi trigger
 -- Insert
 
