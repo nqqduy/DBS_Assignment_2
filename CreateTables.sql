@@ -101,7 +101,7 @@ CREATE TABLE IF NOT EXISTS CongTyVanChuyen.ThongTinCuocXe (
 );
 CREATE TABLE IF NOT EXISTS CongTyVanChuyen.CuocXeNoiThanh (
 	IdCuocXeNt		INT				NOT NULL,
-	DoanhThu		DECIMAL(10, 2)	CHECK(DoanhThu >= 0),
+	DoanhThu		DECIMAL(10, 2)	DEFAULT 0 CHECK(DoanhThu >= 0),
 	PRIMARY KEY(IdCuocXeNt),
 	FOREIGN KEY(IdCuocXeNt) REFERENCES CongTyVanChuyen.ThongTinCuocXe(IdCuocXe)
 		ON DELETE CASCADE	ON UPDATE CASCADE
@@ -163,8 +163,8 @@ CREATE TABLE IF NOT EXISTS CongTyVanChuyen.KienHangNx (
 	FOREIGN KEY(IdKnHang) REFERENCES CongTyVanChuyen.KienHang(IdKienHang)
 		ON DELETE CASCADE	ON UPDATE CASCADE
 );
--- BienBangHang
-CREATE TABLE IF NOT EXISTS CongTyVanChuyen.BienBangHang (
+-- BienBanHang
+CREATE TABLE IF NOT EXISTS CongTyVanChuyen.BienBanHang (
 	IdBienBan		INT				NOT NULL UNIQUE AUTO_INCREMENT,
 	NgayGui			DATE,
 	IdKhGn			INT,
@@ -181,25 +181,50 @@ CREATE TABLE IF NOT EXISTS CongTyVanChuyen.BienBangHang (
 	FOREIGN KEY(IdNgN) REFERENCES CongTyVanChuyen.KhachHang(IdKhachHang)
 		ON DELETE SET NULL	ON UPDATE CASCADE
 );
-CREATE TABLE IF NOT EXISTS CongTyVanChuyen.BienBangNhanHang (
+CREATE TABLE IF NOT EXISTS CongTyVanChuyen.BienBanNhanHang (
 	IdBbanN			INT				NOT NULL,
 	PhiGiaoHangNhan	DECIMAL(10, 2),
 	PhiLienTinh		DECIMAL(10, 2),
 	NgayNhan		DATE,
 	IdKhoNhanTu	INT,
 	PRIMARY KEY(IdBbanN),
-	FOREIGN KEY(IdBbanN) REFERENCES CongTyVanChuyen.BienBangHang(IdBienBan)
+	FOREIGN KEY(IdBbanN) REFERENCES CongTyVanChuyen.BienBanHang(IdBienBan)
 		ON DELETE CASCADE	ON UPDATE CASCADE,
 	FOREIGN KEY(IdKhoNhanTu) REFERENCES CongTyVanChuyen.Kho(IdKho)
 		ON DELETE SET NULL	ON UPDATE CASCADE
 );
-CREATE TABLE IF NOT EXISTS CongTyVanChuyen.BienBangGuiHang (
+CREATE TABLE IF NOT EXISTS CongTyVanChuyen.BienBanGuiHang (
 	IdBbanG			INT				NOT NULL,
 	PhiLayHangGui	DECIMAL(10, 2),
 	IdKhoGuiToi		INT,
 	PRIMARY KEY(IdBbanG),
-	FOREIGN KEY(IdBbanG) REFERENCES CongTyVanChuyen.BienBangHang(IdBienBan)
+	FOREIGN KEY(IdBbanG) REFERENCES CongTyVanChuyen.BienBanHang(IdBienBan)
 		ON DELETE CASCADE	ON UPDATE CASCADE,
 	FOREIGN KEY(IdKhoGuiToi) REFERENCES CongTyVanChuyen.Kho(IdKho)
 		ON DELETE SET NULL	ON UPDATE CASCADE
 );
+
+-- Views
+
+DROP VIEW IF EXISTS CongTyVanChuyen.NvHoatDong;
+CREATE VIEW CongTyVanChuyen.NvHoatDong
+AS
+SELECT *
+FROM CongTyVanChuyen.NhanVien
+WHERE TrangThaiNv = 'HD';
+
+DROP VIEW IF EXISTS CongTyVanChuyen.CxNoiThanh;
+CREATE VIEW CongTyVanChuyen.CxNoiThanh
+AS
+SELECT *
+FROM CongTyVanChuyen.ThongTinCuocXe
+RIGHT JOIN CongTyVanChuyen.CuocXeNoiThanh
+ON IdCuocXe = IdCuocXeNt;
+
+DROP VIEW IF EXISTS CongTyVanChuyen.CxLienTinh;
+CREATE VIEW CongTyVanChuyen.CxLienTinh
+AS
+SELECT *
+FROM CongTyVanChuyen.ThongTinCuocXe
+RIGHT JOIN CongTyVanChuyen.CuocXeLienTinh
+ON IdCuocXe = IdCuocXeLt;
