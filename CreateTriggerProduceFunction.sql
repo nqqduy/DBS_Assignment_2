@@ -60,6 +60,20 @@ BEGIN
 	RETURN (trangThaiPt);
 END$$
 
+DROP FUNCTION IF EXISTS CongTyVanChuyen.tinhDoanhThuNam$$
+CREATE FUNCTION CongTyVanChuyen.tinhDoanhThuNam(
+	nam INT
+) 
+RETURNS DECIMAL(10, 2)
+READS SQL DATA
+NOT DETERMINISTIC
+BEGIN
+	DECLARE doanhThu DECIMAL(10, 2);
+    SELECT SUM(CxNoiThanh.DoanhThu) INTO doanhThu
+    FROM CongTyVanChuyen.CxNoiThanh WHERE YEAR(NgayDi) = nam;
+	RETURN (doanhThu);
+END$$
+
 -- Procedure query
 DROP PROCEDURE IF EXISTS CongTyVanChuyen.searchNhanVien$$
 CREATE PROCEDURE CongTyVanChuyen.searchNhanVien(
@@ -115,8 +129,7 @@ CREATE PROCEDURE CongTyVanChuyen.doanhThuNam(
     OUT		doanhThu		DECIMAL(10, 2)
 )
 BEGIN
-SELECT SUM(CxNoiThanh.DoanhThu) INTO doanhThu FROM CongTyVanChuyen.CxNoiThanh
-WHERE YEAR(NgayDi) = nam;
+SET doanhThu = tinhDoanhThuNam(nam);
 IF (dangBieuDo = 1) THEN
 	SELECT SUM(CxNoiThanh.DoanhThu), MONTH(NgayDi) AS Thang FROM CongTyVanChuyen.CxNoiThanh
 	WHERE YEAR(NgayDi) = nam
