@@ -24,6 +24,23 @@ BEGIN
 	RETURN (loaiNv);
 END$$
 
+DROP FUNCTION IF EXISTS CongTyVanChuyen.txtGioiTinh$$
+CREATE FUNCTION CongTyVanChuyen.txtGioiTinh(
+	sym_gioiTinh CHAR
+) 
+RETURNS VARCHAR(15)
+DETERMINISTIC
+BEGIN
+	DECLARE gioiTinh VARCHAR(15);
+
+	IF (sym_gioiTinh = 'M') THEN
+		SET gioiTinh = 'Nam';
+	ELSEIF (sym_gioiTinh = 'F') THEN
+		SET gioiTinh = 'Nữ';
+	END IF;
+	RETURN (gioiTinh);
+END$$
+
 DROP FUNCTION IF EXISTS CongTyVanChuyen.txtTrangThai$$
 CREATE FUNCTION CongTyVanChuyen.txtTrangThai(
 	sym_TrangThai CHAR(2)
@@ -60,6 +77,49 @@ BEGIN
 	RETURN (trangThaiPt);
 END$$
 
+DROP FUNCTION IF EXISTS CongTyVanChuyen.tinhPhiLienTinh$$
+CREATE FUNCTION CongTyVanChuyen.tinhPhiLienTinh(
+	idKhGn INT
+)
+RETURNS DECIMAL(10, 2)
+READS SQL DATA
+NOT DETERMINISTIC
+BEGIN
+	DECLARE phiLienTinh DECIMAL(10, 2);
+    SELECT SUM(ThongTinHang.PhiNx) INTO phiLienTinh
+    FROM CongTyVanChuyen.ThongTinHang
+    RIGHT JOIN CongTyVanChuyen.ThongTinNhapHang ON IdThongTin = IdTtinNhap
+    RIGHT JOIN (SELECT * FROM CongTyVanChuyen.KienHangNx WHERE IdKnHang = idKhGn) AS KienHangNx
+		ON IdThongTin = IdTtin;
+	RETURN (phiLienTinh);
+END$$
+
+DROP FUNCTION IF EXISTS CongTyVanChuyen.tinhDoanhThuCxNt$$
+CREATE FUNCTION CongTyVanChuyen.tinhDoanhThuCxNt(
+	idCuocXeNt INT
+)
+RETURNS DECIMAL(10, 2)
+READS SQL DATA
+NOT DETERMINISTIC
+BEGIN
+	DECLARE doanhThuCxNtG DECIMAL(10, 2);
+    DECLARE doanhThuCxNtN DECIMAL(10, 2);
+    SELECT SUM(bbgh.PhiLayHangGui) INTO doanhThuCxNtG
+    FROM (SELECT * FROM CongTyVanChuyen.BienBanHang WHERE IdCxNt = idCuocXeNt) AS bbh
+    INNER JOIN CongTyVanChuyen.BienBanGuiHang AS bbgh ON bbh.IdBienBan = bbgh.IdBbanG;
+    SELECT SUM(PhiNtN) INTO doanhThuCxNtN
+    FROM (SELECT * FROM CongTyVanChuyen.BienBanHang WHERE IdCxNt = idCuocXeNt) AS bbh
+    INNER JOIN (SELECT IdBbanN, (PhiGiaoHangNhan + PhiLienTinh) AS PhiNtN
+				FROM CongTyVanChuyen.BienBanNhanHang) AS bbnh
+		ON IdBienBan = IdBbanN;
+	IF (doanhThuCxNtN IS NULL) THEN
+		SET doanhThuCxNtN = 0;
+	ELSEIF (doanhThuCxNtG IS NULL) THEN
+		SET doanhThuCxNtG = 0;
+	END IF;
+	RETURN (doanhThuCxNtG + doanhThuCxNtN);
+END$$
+
 DROP FUNCTION IF EXISTS CongTyVanChuyen.tinhDoanhThuNam$$
 CREATE FUNCTION CongTyVanChuyen.tinhDoanhThuNam(
 	nam INT
@@ -85,39 +145,39 @@ CREATE PROCEDURE CongTyVanChuyen.searchNhanVien(
 )
 BEGIN
 IF (kieuNv = 0) THEN
-	SELECT IdNhanVien, Cccd, HoTen, 'Nhân viên vận chuyển' AS KieuNv, DiaChiNha, Tinh, Email, GioiTinh, NgaySinh, Luong, MatKhau, TrangThaiNv FROM CongTyVanChuyen.NhanVien
-    RIGHT JOIN CongTyVanChuyen.NhanVienVanChuyen
+	SELECT IdNhanVien, Cccd, HoTen, 'Nhân viên vận chuyển' AS KieuNv, DiaChiNha, Tinh, Email, CongTyVanChuyen.txtGioiTinh(GioiTinh) AS GioiTinh, NgaySinh, Luong, SUBSTRING_INDEX(TRIM(HoTen), ' ', -1) AS Ten FROM CongTyVanChuyen.NvHoatDong
+    INNER JOIN CongTyVanChuyen.NhanVienVanChuyen
     ON IdNhanVien = IdNvVc
 	WHERE HoTen LIKE CONCAT('%', searchStr, '%')
 	ORDER BY
-		CASE coSapXep WHEN -1 THEN HoTen END DESC,
-		CASE coSapXep WHEN 0 THEN 1 END ASC,
-		CASE coSapXep WHEN 1 THEN HoTen END ASC;
+		CASE coSapXep WHEN -1 THEN Ten END DESC,
+		CASE coSapXep WHEN 0 THEN IdNhanVien END ASC,
+		CASE coSapXep WHEN 1 THEN Ten END ASC;
 ELSEIF (kieuNv = 1) THEN
-	SELECT IdNhanVien, Cccd, HoTen, 'Nhân viên kho' AS KieuNv, DiaChiNha, Tinh, Email, GioiTinh, NgaySinh, Luong, MatKhau, TrangThaiNv FROM CongTyVanChuyen.NhanVien
-    RIGHT JOIN CongTyVanChuyen.NhanVienKho
+	SELECT IdNhanVien, Cccd, HoTen, CongTyVanChuyen.txtLoaiNv(LoaiNv) AS KieuNv, DiaChiNha, Tinh, Email, CongTyVanChuyen.txtGioiTinh(GioiTinh) AS GioiTinh, NgaySinh, Luong, SUBSTRING_INDEX(TRIM(HoTen), ' ', -1) AS Ten FROM CongTyVanChuyen.NvHoatDong
+    INNER JOIN CongTyVanChuyen.NhanVienKho
     ON IdNhanVien = IdNvKho
 	WHERE HoTen LIKE CONCAT('%', searchStr, '%')
 	ORDER BY
-		CASE coSapXep WHEN -1 THEN HoTen END DESC,
-		CASE coSapXep WHEN 0 THEN 1 END ASC,
-		CASE coSapXep WHEN 1 THEN HoTen END ASC;
+		CASE coSapXep WHEN -1 THEN Ten END DESC,
+		CASE coSapXep WHEN 0 THEN IdNhanVien END ASC,
+		CASE coSapXep WHEN 1 THEN Ten END ASC;
 ELSE
-	SELECT NvKho.* FROM
-	(SELECT IdNhanVien, Cccd, HoTen, 'Nhân viên kho' AS KieuNv, DiaChiNha, Tinh, Email, GioiTinh, NgaySinh, Luong, MatKhau, TrangThaiNv FROM CongTyVanChuyen.NhanVien
-    RIGHT JOIN CongTyVanChuyen.NhanVienKho
+	SELECT NvKho.*, SUBSTRING_INDEX(TRIM(HoTen), ' ', -1) AS Ten FROM
+	(SELECT IdNhanVien, Cccd, HoTen, CongTyVanChuyen.txtLoaiNv(LoaiNv) AS KieuNv, DiaChiNha, Tinh, Email, CongTyVanChuyen.txtGioiTinh(GioiTinh) AS GioiTinh, NgaySinh, Luong FROM CongTyVanChuyen.NvHoatDong
+    INNER JOIN CongTyVanChuyen.NhanVienKho
     ON IdNhanVien = IdNvKho
 	WHERE HoTen LIKE CONCAT('%', searchStr, '%')) AS NvKho
 	UNION ALL
-    SELECT NvVc.* FROM
-    (SELECT IdNhanVien, Cccd, HoTen, 'Nhân viên vận chuyển' AS KieuNv, DiaChiNha, Tinh, Email, GioiTinh, NgaySinh, Luong, MatKhau, TrangThaiNv FROM CongTyVanChuyen.NhanVien
-    RIGHT JOIN CongTyVanChuyen.NhanVienVanChuyen
+    SELECT NvVc.*, SUBSTRING_INDEX(TRIM(HoTen), ' ', -1) AS Ten FROM
+    (SELECT IdNhanVien, Cccd, HoTen, 'Nhân viên vận chuyển' AS KieuNv, DiaChiNha, Tinh, Email, CongTyVanChuyen.txtGioiTinh(GioiTinh) AS GioiTinh, NgaySinh, Luong FROM CongTyVanChuyen.NvHoatDong
+    INNER JOIN CongTyVanChuyen.NhanVienVanChuyen
     ON IdNhanVien = IdNvVc
 	WHERE HoTen LIKE CONCAT('%', searchStr, '%')) AS NvVc
 	ORDER BY
-		CASE coSapXep WHEN -1 THEN HoTen END DESC,
-		CASE coSapXep WHEN 0 THEN 1 END ASC,
-		CASE coSapXep WHEN 1 THEN HoTen END ASC;
+		CASE coSapXep WHEN -1 THEN Ten END DESC,
+		CASE coSapXep WHEN 0 THEN IdNhanVien END ASC,
+		CASE coSapXep WHEN 1 THEN Ten END ASC;
 END IF;
 END$$
 
@@ -131,16 +191,17 @@ CREATE PROCEDURE CongTyVanChuyen.doanhThuNam(
 BEGIN
 SET doanhThu = tinhDoanhThuNam(nam);
 IF (dangBieuDo = 1) THEN
-	SELECT SUM(CxNoiThanh.DoanhThu), MONTH(NgayDi) AS Thang FROM CongTyVanChuyen.CxNoiThanh
+	SELECT SUM(CxNoiThanh.DoanhThu) AS TongDoanhThu, MONTH(NgayDi) AS Thang FROM CongTyVanChuyen.CxNoiThanh
 	WHERE YEAR(NgayDi) = nam
-    GROUP BY Thang;
+    GROUP BY Thang
+    ORDER BY Thang ASC;
 END IF;
 END$$
 
 -- Procedure insert
 
-DROP PROCEDURE IF EXISTS CongTyVanChuyen.insertBienBanGui$$
-CREATE PROCEDURE CongTyVanChuyen.insertBienBanGui(
+DROP PROCEDURE IF EXISTS CongTyVanChuyen.insertBienBanGuiHang$$
+CREATE PROCEDURE CongTyVanChuyen.insertBienBanGuiHang(
 	IN		ngayGui			DATE,
 	IN		idKhGn			INT,
 	IN		idCxNt			INT,
@@ -158,25 +219,36 @@ INSERT INTO CongTyVanChuyen.BienBanGuiHang(IdBbanG, PhiLayHangGui, IdKhoGuiToi)
 VALUES (idBienBan, phiLayHangGui, idKhoGuiToi);
 END$$
 
-DROP PROCEDURE IF EXISTS CongTyVanChuyen.insertBienBanNhan$$
-CREATE PROCEDURE CongTyVanChuyen.insertBienBanNhan(
+DROP PROCEDURE IF EXISTS CongTyVanChuyen.insertBienBanNhanHang$$
+CREATE PROCEDURE CongTyVanChuyen.insertBienBanNhanHang(
 	IN		ngayGui			DATE,
 	IN		idKhGn			INT,
 	IN		idCxNt			INT,
 	IN		idNgG			INT,
 	IN		idNgN			INT,
 	IN		phiGiaoHangNhan	DECIMAL(10, 2),
-	IN		phiLienTinh		DECIMAL(10, 2),
 	IN		ngayNhan		DATE,
 	IN		idKhoNhanTu		INT
 )
 BEGIN
 DECLARE idBienBan INT;
+DECLARE phiLienTinh DECIMAL(10, 2);
+
 INSERT INTO CongTyVanChuyen.BienBanHang(NgayGui, IdKhGn, IdCxNt, IdNgG, IdNgN)
 VALUES (ngayGui, idKhGn, idCxNt, idNgG, idNgN);
 SET idBienBan = LAST_INSERT_ID();
-INSERT INTO CongTyVanChuyen.BienBanNhanHang(IdBbanN, PhiGiaoHangNhan, PhiLienTinh, NgayNhan, IdKhoNhanTu)
-VALUES (idBienBan, phiGiaoHangNhan, phiLienTinh, ngayNhan, idKhoNhanTu);
+
+IF (ngayNhan <= ngayGui) THEN 
+	SIGNAL SQLSTATE '10001'
+		SET MESSAGE_TEXT = 'Ngay nhan hang phai dien ra sau ngay gui hang!!!';
+ELSEIF (EXISTS(SELECT * FROM CongTyVanChuyen.BienBanGuiHang WHERE IdBbanG = idBienBan)) THEN
+	SIGNAL SQLSTATE '10002'
+		SET MESSAGE_TEXT = 'Id cua bien ban nay da ton tai o bien ban nhan gui!!!';
+END IF;
+
+SET phiLienTinh = CongTyVanChuyen.tinhPhiLienTinh(idKhGn);
+INSERT INTO CongTyVanChuyen.BienBanNhanHang(IdBbanN, PhiLienTinh, PhiGiaoHangNhan, NgayNhan, IdKhoNhanTu)
+VALUES (idBienBan, phiLienTinh, phiGiaoHangNhan, ngayNhan, idKhoNhanTu);
 END$$
 
 DROP PROCEDURE IF EXISTS CongTyVanChuyen.insertThongTinXuat$$
@@ -230,10 +302,43 @@ INSERT INTO CongTyVanChuyen.ThongTinNhapHang(IdTtinNhap, IdNvNhap)
 VALUES (idThongTin, idNvNhap);
 END$$
 
+DROP PROCEDURE IF EXISTS CongTyVanChuyen.insertCuocXeNoiThanh$$
+CREATE PROCEDURE CongTyVanChuyen.insertCuocXeNoiThanh(
+	IN		ngayDi			DATE,
+	IN		idPhTien		INT,
+	IN		idNgLai			INT,
+	IN		idNgPhuLai		INT,
+	OUT		idCuocXe		INT
+)
+BEGIN
+INSERT INTO CongTyVanChuyen.ThongTinCuocXe(NgayDi, IdPhTien, IdNgLai, IdNgPhuLai)
+VALUES (ngayDi, idPhTien, idNgLai, idNgPhuLai);
+SET idCuocXe = LAST_INSERT_ID();
+INSERT INTO CongTyVanChuyen.CuocXeNoiThanh(IdCuocXeNt)
+VALUES (idCuocXe);
+END$$
+
+DROP PROCEDURE IF EXISTS CongTyVanChuyen.insertCuocXeLienTinh$$
+CREATE PROCEDURE CongTyVanChuyen.insertCuocXeLienTinh(
+	IN		ngayDi			DATE,
+	IN		idPhTien		INT,
+	IN		idNgLai			INT,
+	IN		idNgPhuLai		INT,
+    IN		ngayDen			DATE,
+	OUT		idCuocXe		INT
+)
+BEGIN
+INSERT INTO CongTyVanChuyen.ThongTinCuocXe(NgayDi, IdPhTien, IdNgLai, IdNgPhuLai)
+VALUES (ngayDi, idPhTien, idNgLai, idNgPhuLai);
+SET idCuocXe = LAST_INSERT_ID();
+INSERT INTO CongTyVanChuyen.CuocXeLienTinh(IdCuocXeLt, NgayDen)
+VALUES (idCuocXe, ngayDen);
+END$$
+
 DROP PROCEDURE IF EXISTS CongTyVanChuyen.insertDienThoaiNv$$
 CREATE PROCEDURE CongTyVanChuyen.insertDienThoaiNv(
 	IN		idNv			INT,
-	IN		dienThoai		CHAR(10)
+	IN		dienThoai		VARCHAR(32)
 )
 BEGIN
 IF ((dienThoai REGEXP '^0[0-9]{9}$') = 0) THEN
@@ -249,8 +354,8 @@ END$$
 DROP PROCEDURE IF EXISTS CongTyVanChuyen.updateDienThoaiNv$$
 CREATE PROCEDURE CongTyVanChuyen.updateDienThoaiNv(
 	IN		idNv			INT,
-	IN		dienThoai		CHAR(10),
-    IN		dienThoaiMoi	CHAR(10)
+	IN		dienThoai		VARCHAR(32),
+    IN		dienThoaiMoi	VARCHAR(32)
 )
 BEGIN
 IF ((dienThoai REGEXP '^0[0-9]{9}$') = 0) THEN
@@ -265,12 +370,45 @@ SET DienThoai = dienThoaiMoi
 WHERE DienThoaiNv.IdNv = idNv AND DienThoaiNv.DienThoai = dienThoai;
 END$$
 
+DROP PROCEDURE IF EXISTS CongTyVanChuyen.batDauCuocXe$$
+CREATE PROCEDURE CongTyVanChuyen.batDauCuocXe(
+	IN		idCuocXe			INT
+)
+BEGIN
+DECLARE idPhTien INT;
+SELECT ThongTinCuocXe.IdPhTien INTO idPhTien
+FROM CongTyVanChuyen.ThongTinCuocXe
+WHERE ThongTinCuocXe.IdCuocXe = idCuocXe;
+UPDATE CongTyVanChuyen.PhuongTien
+SET TrangThaiPt = 'HD'
+WHERE IdPhuongTien = idPhTien;
+END$$
+
+DROP PROCEDURE IF EXISTS CongTyVanChuyen.hoanThanhCuocXe$$
+CREATE PROCEDURE CongTyVanChuyen.hoanThanhCuocXe(
+	IN		idCuocXe			INT
+)
+BEGIN
+DECLARE idPhTien INT;
+SELECT ThongTinCuocXe.IdPhTien INTO idPhTien
+FROM CongTyVanChuyen.ThongTinCuocXe
+WHERE ThongTinCuocXe.IdCuocXe = idCuocXe;
+
+UPDATE CongTyVanChuyen.CuocXeNoiThanh
+SET DoanhThu = CongTyVanChuyen.tinhDoanhThuCxNt(idCuocXe)
+WHERE IdCuocXeNt = idCuocXe;
+
+UPDATE CongTyVanChuyen.PhuongTien
+SET TrangThaiPt = 'SS'
+WHERE IdPhuongTien = idPhTien;
+END$$
+
 -- Procedure delete
 
 DROP PROCEDURE IF EXISTS CongTyVanChuyen.deleteDienThoaiNv$$
 CREATE PROCEDURE CongTyVanChuyen.deleteDienThoaiNv(
 	IN		idNv			INT,
-	IN		dienThoai		CHAR(10)
+	IN		dienThoai		VARCHAR(32)
 )
 BEGIN
 IF ((dienThoai REGEXP '^0[0-9]{9}$') = 0) THEN
@@ -289,9 +427,10 @@ CREATE TRIGGER CongTyVanChuyen.trigger_insert_BienBanNhanHang BEFORE INSERT ON C
 FOR EACH ROW 
 BEGIN
 DECLARE ngayGui DATE;
-SELECT NgayGui FROM CongTyVanChuyen.BienBanHang
+DECLARE idKhGn INT;
+SELECT NgayGui, IdKhGn FROM CongTyVanChuyen.BienBanHang
 WHERE IdBienBan = NEW.IdBbanN
-INTO ngayGui;
+INTO ngayGui, idKhGn;
 IF (NEW.NgayNhan <= ngayGui) THEN 
 	SIGNAL SQLSTATE '10001'
 		SET MESSAGE_TEXT = 'Ngay nhan hang phai dien ra sau ngay gui hang!!!';
@@ -299,6 +438,7 @@ ELSEIF (EXISTS(SELECT * FROM CongTyVanChuyen.BienBanGuiHang WHERE IdBbanG = NEW.
 	SIGNAL SQLSTATE '10002'
 		SET MESSAGE_TEXT = 'Id cua bien ban nay da ton tai o bien ban nhan gui!!!';
 END IF;
+SET NEW.PhiLienTinh = CongTyVanChuyen.tinhPhiLienTinh(idKhGn);
 END$$
 
 DROP TRIGGER IF EXISTS CongTyVanChuyen.trigger_insert_BienBanGuiHang$$
@@ -308,7 +448,7 @@ BEGIN
 IF (EXISTS(SELECT * FROM CongTyVanChuyen.BienBanNhanHang WHERE IdBbanN = NEW.IdBbanG)) THEN 
 	SIGNAL SQLSTATE '10003'
 		SET MESSAGE_TEXT = 'Id cua bien ban nay da ton tai o bien ban nhan hang!!!';
-END IF; 
+END IF;
 END$$
 
 DROP TRIGGER IF EXISTS CongTyVanChuyen.trigger_insert_CuocXeLienTinh$$

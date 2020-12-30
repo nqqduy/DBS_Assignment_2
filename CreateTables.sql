@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS CongTyVanChuyen.NhanVien (
 );
 CREATE TABLE IF NOT EXISTS CongTyVanChuyen.DienThoaiNv (
 	IdNv			INT				NOT NULL,
-	DienThoai		CHAR(10)		NOT NULL CHECK(DienThoai REGEXP '^0[0-9]{9}$'),
+	DienThoai		VARCHAR(32)		NOT NULL CHECK(DienThoai REGEXP '^0[0-9]{9}$'),
 	PRIMARY KEY(IdNv, DienThoai),
 	FOREIGN KEY(IdNv) REFERENCES CongTyVanChuyen.NhanVien(IdNhanVien)
 		ON DELETE CASCADE	ON UPDATE CASCADE
@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS CongTyVanChuyen.KhachHang (
 	HoTen			VARCHAR(64)		NOT NULL,
 	DiaChiNha		VARCHAR(64),
 	Tinh			VARCHAR(32)		NOT NULL,
-	DienThoai		CHAR(10)		NOT NULL CHECK(DienThoai REGEXP '^0[0-9]{9}$'),
+	DienThoai		VARCHAR(32)		NOT NULL CHECK(DienThoai REGEXP '^0[0-9]{9}$'),
 	PRIMARY KEY(IdKhachHang)
 );
 -- YeuCau
@@ -81,7 +81,7 @@ CREATE TABLE IF NOT EXISTS CongTyVanChuyen.YeuCau (
 CREATE TABLE IF NOT EXISTS CongTyVanChuyen.PhuongTien (
 	IdPhuongTien	INT				NOT NULL UNIQUE AUTO_INCREMENT,
 	BienSo			VARCHAR(32),
-	TrangThaiPt		CHAR(2),
+	TrangThaiPt		CHAR(2)			DEFAULT 'SS',
 	PRIMARY KEY(IdPhuongTien)
 );
 -- ThongTinCuocXe
@@ -184,7 +184,7 @@ CREATE TABLE IF NOT EXISTS CongTyVanChuyen.BienBanHang (
 CREATE TABLE IF NOT EXISTS CongTyVanChuyen.BienBanNhanHang (
 	IdBbanN			INT				NOT NULL,
 	PhiGiaoHangNhan	DECIMAL(10, 2),
-	PhiLienTinh		DECIMAL(10, 2),
+	PhiLienTinh		DECIMAL(10, 2)	DEFAULT 0,
 	NgayNhan		DATE,
 	IdKhoNhanTu	INT,
 	PRIMARY KEY(IdBbanN),
