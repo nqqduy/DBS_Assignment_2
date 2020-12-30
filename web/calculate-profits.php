@@ -14,32 +14,10 @@
  */
 require_once 'header.php';
 
-$sql = "
-SELECT IdNhanVien, HoTen, KieuNv, Email, CongTyVanChuyen.txtGioiTinh(GioiTinh)
-    AS GioiTinh, DienThoai
-FROM
-(SELECT NvKho.* FROM
-(SELECT IdNhanVien, Cccd, HoTen, CongTyVanChuyen.txtLoaiNv(LoaiNv) AS KieuNv,
-DiaChiNha, Tinh, Email, GioiTinh, NgaySinh, Luong, MatKhau, TrangThaiNv
-FROM CongTyVanChuyen.NvHoatDong
-INNER JOIN CongTyVanChuyen.NhanVienKho
-ON IdNhanVien = IdNvKho) AS NvKho
-UNION ALL
-SELECT NvVc.* FROM
-(SELECT IdNhanVien, Cccd, HoTen, 'Nhân viên vận chuyển' AS KieuNv,
-DiaChiNha, Tinh, Email, GioiTinh, NgaySinh, Luong, MatKhau, TrangThaiNv
-FROM CongTyVanChuyen.NvHoatDong
-INNER JOIN CongTyVanChuyen.NhanVienVanChuyen
-ON IdNhanVien = IdNvVc) AS NvVc) AS NhanVien
-LEFT JOIN CongTyVanChuyen.DienThoaiNv ON IdNhanVien = IdNv
-ORDER BY IdNhanVien;
-        ";
-$q = $pdo->query($sql);
-$q->setFetchMode(PDO::FETCH_ASSOC);
 ?>
 <div class="about" id="phone">
     <div class="container">
-        <h3 class="title">Quản lý Điện thoại</h3>
+        <h3 class="title">Quản lý doanh thu</h3>
         <script src="js/Chart.min.js"></script>
         <script src="js/utils.js"></script>
         <style>
