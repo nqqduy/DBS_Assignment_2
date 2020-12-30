@@ -33,5 +33,5 @@
 - TrangThaiPt của PhuongTien gồm HD(Hoạt động), SS(Sẵn sàng), BD(Bảo dưỡng).
 - NgayDen của CuocXeLienTinh >= NgayDi của ThongTinCuocXe.
 - NgayGui của BienBanHang <= NgayNhan của BienBanNhanHang.
-- Các giá trị tiền tệ như (Luong, DoanhThu, Phi,...) liên quan đến tiền tệ có kiểu data là decimal(10, 2) lấy đơn vị là nghìn đồng.
+- Các giá trị tiền tệ như (Luong, DoanhThu, Phi,..) liên quan đến tiền tệ có kiểu data là decimal(10, 2) lấy đơn vị là nghìn đồng.
 - Các giá trị liên quan đến khối lượng lấy đơn vị là gam.
